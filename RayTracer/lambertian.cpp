@@ -3,6 +3,7 @@
 lambertian::lambertian(const vec3& a)
 {
     this->albedo = a;
+    this->light_hits = true;
 }
 
 bool lambertian::scatter(const ray &r_in, const hitrecord &rec, vec3 &attenuation, ray &scattered) const{

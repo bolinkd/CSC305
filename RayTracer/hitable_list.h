@@ -10,6 +10,8 @@ public:
 
     hitable_list() {}
     hitable_list(hitable **_list, int _size) { list = _list; size = _size; }
+
+    virtual bool lightHit(const ray &r, float t_min, float t_max, hitrecord &rec) const;
     virtual bool hit(const ray &r, float t_min, float t_max, hitrecord &rec) const;
 };
 
@@ -26,6 +28,24 @@ bool hitable_list::hit(const ray &r, float t_min, float t_max, hitrecord &rec) c
     }
     return hit;
 }
+
+bool hitable_list::lightHit(const ray &r, float t_min, float t_max, hitrecord &rec) const {
+    hitrecord tempRec;
+    bool hit = false;
+    double closest = t_max;
+    for(int i=0;i<this->size;i++){
+        if( list[i]->hit(r, t_min, closest, tempRec)) {
+            if(list[i]->lightHit(r, t_min, closest, tempRec)){
+                hit = true;
+                closest = tempRec.t;
+                rec = tempRec;
+            }
+        }
+    }
+    return hit;
+}
+
+
 
 #endif // HITABLE_LIST
 

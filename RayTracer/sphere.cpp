@@ -27,3 +27,11 @@ bool sphere::hit(const ray& r, float t_min, float t_max, hitrecord &rec) const{
     }
     return false;
 }
+
+
+bool sphere::lightHit(const ray& r, float t_min, float t_max, hitrecord& rec) const{
+    if(dynamic_cast<dielectric*>(this->mat_ptr) == NULL){
+        return true;
+    }
+    return false;
+}

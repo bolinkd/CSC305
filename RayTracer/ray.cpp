@@ -5,7 +5,7 @@ ray::ray()
 
 }
 
-ray::ray(const vec3 &a, const vec3 &b){
-    this->A = a;
-    this->B = b;
+ray::ray(const vec3 &_o, const vec3 &_d){
+    this->o = _o;
+    this->d = _d;
 }

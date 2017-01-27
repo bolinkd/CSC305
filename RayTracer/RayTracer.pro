@@ -12,7 +12,9 @@ SOURCES += main.cpp \
     camera.cpp \
     lambertian.cpp \
     metal.cpp \
-    dielectric.cpp
+    dielectric.cpp \
+    plane.cpp \
+    light.cpp
 
 HEADERS += \
     vec3.h \
@@ -24,5 +26,7 @@ HEADERS += \
     material.h \
     lambertian.h \
     metal.h \
-    dielectric.h
+    dielectric.h \
+    plane.h \
+    light.h
 

@@ -3,6 +3,7 @@
 dielectric::dielectric(float _ri)
 {
     this->ref_idx = _ri;
+    this->light_hits = false;
 }
 
 bool dielectric::scatter(const ray &r_in, const hitrecord &rec, vec3 &attenuation, ray &scattered) const {

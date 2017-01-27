@@ -8,6 +8,7 @@ class metal : public material
 public:
     vec3 albedo;
     float fuzz;
+    bool light_hits;
 
     metal(const vec3& _a, float _f);
 

@@ -8,6 +8,7 @@ class dielectric: public material
 {
 public:
     float ref_idx;
+    bool light_hits;
 
     dielectric(float _ri);
 
