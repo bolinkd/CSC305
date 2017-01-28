@@ -28,9 +28,16 @@ bool plane::hit(const ray &r, float t_min, float t_max, hitrecord &rec) const{
     return false;
 }
 
-bool plane::lightHit(const ray& r, float t_min, float t_max, hitrecord& rec) const{
-    if(dynamic_cast<dielectric*>(this->mat_ptr) == NULL){
-        return true;
+bool plane::lighthit(const ray &r, float t_min, float t_max, hitrecord &rec) const{
+    float denom = dot(this->normal, r.direction());
+    rec.mat_ptr = this->mat_ptr;
+    if(this->mat_ptr->lighthit()){
+        if(denom != 0 ) {
+            float temp = dot(this->normal, this->p0 - r.origin()) / denom;
+            if(temp < t_max && temp > t_min){
+                return true;
+            }
+        }
     }
     return false;
 }

@@ -13,6 +13,8 @@ public:
     metal(const vec3& _a, float _f);
 
     virtual bool scatter(const ray &r_in, const hitrecord &rec, vec3 &attenuation, ray &scattered) const;
+    virtual bool lighthit() { return true;}
+
 };
 
 #endif // METAL_H

@@ -1,7 +1,7 @@
 #ifndef LIGHT_H
 #define LIGHT_H
 
-#include "ray.h"
+#include "hitable.h"
 
 class light
 {
@@ -11,6 +11,8 @@ public:
 
     light();
     light(vec3 _p, vec3 _c);
+
+    virtual bool hit(hitrecord &orec, hitrecord &lrec, hitable *world) const;
 };
 
 #endif // LIGHT_H

@@ -9,6 +9,7 @@ struct hitrecord;
 class material {
 public:
     virtual bool scatter(const ray& r_in, const hitrecord& rec, vec3& attenuation, ray& scattered) const = 0;
+    virtual bool lighthit() = 0;
 };
 
 inline vec3 random_in_unit_sphere() {

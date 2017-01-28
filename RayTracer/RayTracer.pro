@@ -28,5 +28,6 @@ HEADERS += \
     metal.h \
     dielectric.h \
     plane.h \
-    light.h
+    light.h \
+    light_list.h
 

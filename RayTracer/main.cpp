@@ -8,7 +8,7 @@
 #include "metal.h"
 #include "plane.h"
 #include "light.h"
-
+#include "light_list.h"
 
 int num_lights;
 vec3 red(1.0f, 0.0f, 0.0f);
@@ -51,67 +51,77 @@ hitable *random_scene() {
     return new hitable_list(list,i);
 }
 
-vec3 color(const ray& r, hitable *world, light **lights, int depth) {
+vec3 color(const ray& r, hitable *world, light_list *lights, int depth) {
     hitrecord rec;
-    light *closestLight = NULL;
-    float closestDistance = 0;
+    vec3 spec;
+    float specWeight = 0.0;
+    vec3 shading;
+    float shadeWeight = 0.1;
     if(world->hit(r, 0.01f, FLT_MAX, rec)) {
-        for(int i=0; i<num_lights;i++){
-            // Check if hit record can see light
-            light *tmpLight = lights[i];
-            hitrecord tmpRec;
-            ray lightray(rec.p + 0.001f, tmpLight->point - rec.p);
-            if(!world->lightHit(lightray, 0.001, lightray.d.length(), tmpRec)){
-                if( closestLight == NULL or lightray.d.length() < closestDistance){
-                    closestLight = tmpLight;
-                    closestDistance = lightray.d.length();
+        ray scattered;
+        vec3 attenuation;
+        hitrecord lrec;
+        if(lights->hit(rec, 0.01f, rec.t, lrec, world)){
+            if(lrec.mat_ptr->lighthit()){
+                if(lrec.t < 1 && lrec.t > 0){
+                    spec = lrec.p;
+                    if(lrec.t > 0.99f){
+                        specWeight = lrec.t;
+                    }
+                    shading = lrec.p*(lrec.t) + black*(1-lrec.t);
+                }else{
+                    shading = black;
                 }
+            }else{
+                shading = green;
+                shadeWeight = 0.0;
             }
+        }else{
+            shading = black;
         }
-        if(closestLight != NULL){
-            ray scattered;
-            vec3 attenuation;
-            if(depth < 50 && rec.mat_ptr->scatter(r, rec, attenuation, scattered)){
-                return attenuation * ((0.9 * color(scattered, world, lights, depth+1)) + (0.1 * closestLight->color));
-            }
+
+        if(depth < 50 && rec.mat_ptr->scatter(r,rec,attenuation,scattered)) {
+            return specWeight*(spec*attenuation) + (1.0-specWeight)*attenuation*((1.0-shadeWeight)*color(scattered, world, lights, depth+1)+(shadeWeight*shading));
         }else{
             return black;
         }
+    }else{
+        return background;
     }
-    return background;
 }
 
 int main()
 {
-    int nx = 200;
-    int ny = 100;
+    int nx = 500;
+    int ny = 500;
     int ns = 100;
 
     vec3 picture[ny][nx];
 
     //Set Up Objects
-    hitable *objects[5];
-    light *lights[1];
+    hitable *olist[5];
+    light *llist[1];
 
-    lights[0] = new light(vec3(0.0f, 10.0f, 0.0f), white);
-    num_lights = sizeof(lights) / sizeof(lights[0]);
 
-    objects[0] = new sphere(vec3(0,0,0), 0.5, new lambertian(red));
-    objects[1] = new plane(vec3(0.0,-0.5,0.0), vec3(0.0,1.0,0), new lambertian(blue));
-    objects[2] = new sphere(vec3(1,0,-1), 0.5, new metal(green, 1.0));
-    objects[3] = new sphere(vec3(-1,0,-1), 0.5, new dielectric(1.5));
-    objects[4] = new sphere(vec3(-1,0,-1), -0.45, new dielectric(1.5));
+    olist[0] = new sphere(vec3(0,0,0), 0.5, new lambertian(red));
+    olist[1] = new sphere(vec3(1,0,-1), 0.5, new metal(blue, 0.0));
+    olist[2] = new sphere(vec3(-1,0,-1), 0.5, new dielectric(1.5));
+    olist[3] = new sphere(vec3(-1,0,-1), -0.45, new dielectric(1.5));
+    olist[4] = new plane(vec3(0.0,-0.5,0.0), vec3(0.0,1.0,0.0), new lambertian(green));
+
+    llist[0] = new light(vec3(0.0f, 3.0f, 10.0f), white);
 
     //Set Up Camera
-    vec3 lookfrom(0.0f,2.0f,10.0f);
+    vec3 lookfrom(4.0f,2.0f,3.0f);
     vec3 lookat(0.0f,0.0f,0.0f);
-    float dist_to_focus = 10.0f;
+    float dist_to_focus = 5.0f;
     float aperture = 0.1f;
 
-    camera cam(lookfrom, lookat, vec3(0,1,0), 20, float(nx)/float(ny), aperture, dist_to_focus);
+    camera cam(lookfrom, lookat, vec3(0,1,0), 45, float(nx)/float(ny), aperture, dist_to_focus);
 
-    hitable *world = new hitable_list(objects, 5);
-    world = random_scene();
+    hitable *world = new hitable_list(olist, 5);
+    //world = random_scene();
+    light_list *lights = new light_list(llist, 1);
 
     //Iterate over pixels
     #pragma omp parallel for

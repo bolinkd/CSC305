@@ -29,9 +29,26 @@ bool sphere::hit(const ray& r, float t_min, float t_max, hitrecord &rec) const{
 }
 
 
-bool sphere::lightHit(const ray& r, float t_min, float t_max, hitrecord& rec) const{
-    if(dynamic_cast<dielectric*>(this->mat_ptr) == NULL){
-        return true;
+bool sphere::lighthit(const ray &r, float t_min, float t_max, hitrecord &rec) const{
+    rec.mat_ptr = this->mat_ptr;
+    if(this->mat_ptr->lighthit()){
+        float temp;
+        vec3 oc = r.origin() - this->center;
+        float a = dot(r.direction(), r.direction());
+        float b = dot(oc, r.direction());
+        float c = dot(oc, oc) - (this->radius*this->radius);
+
+        float discriminante  = b*b - a*c;
+        if (discriminante > 0) {
+            temp = (-b - sqrt(b*b-a*c))/a;
+            if(temp < t_max && temp > t_min) {
+                return true;
+            }
+            temp = (-b + sqrt(b*b-a*c))/a;
+            if(temp < t_max && temp > t_min) {
+                return true;
+            }
+        }
     }
     return false;
 }

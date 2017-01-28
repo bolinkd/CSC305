@@ -12,7 +12,7 @@ public:
     material *mat_ptr;
 
     virtual bool hit(const ray &r, float t_min, float t_max, hitrecord &rec) const;
-    virtual bool lightHit(const ray& r, float t_min, float t_max, hitrecord& rec) const;
+    virtual bool lighthit(const ray &r, float t_min, float t_max, hitrecord &rec) const;
 
     plane();
     plane(vec3 _p, vec3 _n, material *_m);
