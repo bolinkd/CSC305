@@ -1,2 +1,8 @@
 build-*
 *.zip
+*.out
+*.user
+*.qbs
+*.zip
+*.tar.gz
+

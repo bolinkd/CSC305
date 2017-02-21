@@ -86,7 +86,7 @@ vec3 color(const ray& r, hitable *world, light_list *lights, int depth) {
             return black;
         }
     }else{
-        return background;
+        return black;
     }
 }
 

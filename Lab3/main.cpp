@@ -368,7 +368,7 @@ void render_scene(
         ////////////////////
         mat4 model = mat4();
 
-        mat4 rotation = glm::rotate(sin(curr_time), glm::vec3(0,1,0));
+        mat4 rotation = glm::translate(vec3(-6.0,-2.0,-2.0)) * glm::rotate(curr_time, glm::vec3(0,1,0));
 
         model = rotation * model;
 

@@ -4,7 +4,6 @@ metal::metal(const vec3& _a, float _f)
 {
     this->albedo = _a;
     this->fuzz = _f;
-    this->light_hits = false;
 }
 
 bool metal::scatter(const ray &r_in, const hitrecord &rec, vec3 &attenuation, ray &scattered) const {
