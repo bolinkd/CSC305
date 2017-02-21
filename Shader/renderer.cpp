@@ -113,10 +113,12 @@ void Renderer::Render()
             Transform* transform = new Transform();
             transform->Scale = ChildTransform->Scale;
             transform->Translation = ChildTransform->Translation;
+            transform->Rotation = ChildTransform->Rotation;
+            transform->RotationOrigin = ChildTransform->RotationOrigin;
             while( parentID != -1 ){
                 const Transform* ParentTransform = &mScene->Transforms[parent->TransformID];
                 transform->Scale = ParentTransform->Scale * transform->Scale;
-                //transform->RotationOrigin = ParentTransform->RotationOrigin * ChildTransform->RotationOrigin;
+                transform->RotationOrigin = ChildTransform->RotationOrigin - ParentTransform->Translation;
                 //transform->Rotation = ParentTransform->Rotation * ChildTransform->Rotation;
                 transform->Translation = ParentTransform->Translation + transform->Translation;
                 parentID = mScene->Instances[parentID].ParentID;

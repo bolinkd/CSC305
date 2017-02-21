@@ -17,24 +17,23 @@ out vec4 FragColor;
 
 void main()
 {
-	vec3 LightPos = vec3(3.0);
+	vec3 LightPos = vec3(10.0,2.0,0.0);
     // TODO: Replace with Phong shading
     vec3 lightDir = normalize(LightPos - vec3(fragment_position));
 
     float lambertian = max(dot(lightDir, fragment_normal), 0.0);
     
     float specular = 0.0;
-    if(lambertian > 0.0){
-    	vec4 viewDir = normalize(fragment_position);
 
-    	vec4 halfDir = normalize(vec4(lightDir,1.0) - viewDir);
-    	float specAngle = clamp(dot(halfDir, vec4(fragment_normal,1.0)), 0.0, 1.0);
-    	specular = pow(specAngle, Shininess);
-    }
+	vec3 viewDir = normalize(CameraPos - fragment_position.xyz);
+
+	vec3 halfDir = normalize(lightDir + viewDir); // Check This
+	float specAngle = max(0, dot(halfDir, fragment_normal));
+	specular = pow(specAngle, Shininess);
 
     vec4 diffuseMap = vec4(Diffuse, 1.0);
     if(HasDiffuseMap != 0) {
-        diffuseMap = texture(DiffuseMap, fragment_texcoord).rgba;
+        diffuseMap = diffuseMap * texture(DiffuseMap, fragment_texcoord).rgba;
     } 
 
     FragColor = lambertian * diffuseMap

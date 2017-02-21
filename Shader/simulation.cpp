@@ -4,10 +4,13 @@
 
 #include "imgui.h"
 
+#include <math.h>
+
 #define FLYTHROUGH_CAMERA_IMPLEMENTATION
 #include "flythrough_camera.h"
 
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/transform.hpp>
 
 #include <SDL2/SDL.h>
 
@@ -42,7 +45,7 @@ void Simulation::Init(Scene* scene)
             uint32_t newTransformID = scene->Instances[newInstanceID].TransformID;
             scene->Instances[newInstanceID].ParentID = CubeId;
             scene->Transforms[newTransformID].Translation += glm::vec3(0.0f, 3.0f, 0.0f);
-            //scene->Transforms[newTransformID].Scale = glm::vec3(0.5f);
+            scene->Transforms[newTransformID].Scale = glm::vec3(0.5f);
         }
 
         // place a teapot on the side
@@ -50,7 +53,12 @@ void Simulation::Init(Scene* scene)
             uint32_t newInstanceID;
             AddMeshInstance(mScene, loadedMeshID, &newInstanceID);
             uint32_t newTransformID = scene->Instances[newInstanceID].TransformID;
+            scene->Instances[newInstanceID].ParentID = CubeId;
+            scene->Transforms[newTransformID].Scale = glm::vec3(0.5f);
             scene->Transforms[newTransformID].Translation += glm::vec3(3.0f, 1.0f, 4.0f);
+            //scene->Transforms[newTransformID].RotationOrigin = glm::vec3(0.0f, 1.0f, 1.0f);
+            glm::mat4 transformxD = glm::rotate(float(M_PI) / 2, glm::vec3(1.0, 1.0, 1.0));
+            scene->Transforms[newTransformID].Rotation = glm::quat(transformxD);
         }
 
         // place another teapot on the side

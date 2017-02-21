@@ -26,6 +26,6 @@ void main()
     // TODO: Pass vertex attributes to fragment shader
     fragment_position = Position;
     fragment_texcoord = TexCoord;
-    fragment_normal = Normal;
+    fragment_normal = Normal_ModelWorld * Normal;
 
 }
