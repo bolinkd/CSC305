@@ -293,3 +293,22 @@ void AddMeshInstance(
         *newInstanceID = tmpNewInstanceID;
     }
 }
+
+void AddInstance(
+    Scene* scene,
+    uint32_t* newInstanceID)
+{
+     Transform newTransform;
+    newTransform.Scale = glm::vec3(1.0f);
+
+    uint32_t newTransformID = scene->Transforms.insert(newTransform);
+
+    Instance newInstance;
+    newInstance.TransformID = newTransformID;
+
+    uint32_t tmpNewInstanceID = scene->Instances.insert(newInstance);
+    if (newInstanceID)
+    {
+        *newInstanceID = tmpNewInstanceID;
+    }   
+}

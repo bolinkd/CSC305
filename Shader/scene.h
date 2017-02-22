@@ -91,3 +91,7 @@ void AddMeshInstance(
     Scene* scene,
     uint32_t meshID,
     uint32_t* newInstanceID);
+
+void AddInstance(
+    Scene* scene,
+    uint32_t* newInstanceID);

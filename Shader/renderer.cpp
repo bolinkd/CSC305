@@ -118,9 +118,9 @@ void Renderer::Render()
             while( parentID != -1 ){
                 const Transform* ParentTransform = &mScene->Transforms[parent->TransformID];
                 transform->Scale = ParentTransform->Scale * transform->Scale;
-                transform->RotationOrigin = ChildTransform->RotationOrigin - ParentTransform->Translation;
-                //transform->Rotation = ParentTransform->Rotation * ChildTransform->Rotation;
                 transform->Translation = ParentTransform->Translation + transform->Translation;
+                transform->RotationOrigin = transform->RotationOrigin - ChildTransform->Translation;
+                transform->Rotation = ParentTransform->Rotation * ChildTransform->Rotation;
                 parentID = mScene->Instances[parentID].ParentID;
             }
             glm::mat4 modelWorld;
